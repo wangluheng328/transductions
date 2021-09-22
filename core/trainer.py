@@ -12,7 +12,7 @@ from omegaconf import DictConfig
 from typing import Dict, Tuple
 from cmd import Cmd
 import pickle
-from torchtext.data import Batch
+from torchtext.legacy.data import Batch
 from torchtext.vocab import Vocab
 import re
 
