@@ -17,6 +17,7 @@ class EarlyStopping:
 
     self.patience = cfg.patience
     self.tolerance = cfg.tolerance
+    self.min_iters = cfg.min_iters
 
     # Counters
     self.counter = 0
@@ -24,7 +25,7 @@ class EarlyStopping:
     self.should_stop = False
     self.should_save = True
 
-  def __call__(self, loss):
+  def __call__(self, loss, num_iters=float('inf')):
     
     score = loss
 
@@ -43,7 +44,8 @@ class EarlyStopping:
         self.counter = 0
         self.should_save = True
         self.should_stop = False
+      
+      if self.min_iters and num_iters < self.min_iters:
+        self.should_stop = False
 
     return self.should_stop, self.should_save
-  
-

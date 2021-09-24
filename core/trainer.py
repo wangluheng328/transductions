@@ -25,6 +25,8 @@ from core.early_stopping import EarlyStopping
 
 log = logging.getLogger(__name__)
 
+log = logging.getLogger(__name__)
+
 class Trainer:
   """
   Handles interface between:
@@ -59,7 +61,7 @@ class Trainer:
     """
 
     diff = int(output.shape[-1] - target.shape[-1])
-    pad_idx = self._model._decoder.vocab.stoi['<pad>']
+    pad_idx = self._model._decoder._vocabulary.stoi['<pad>']
 
     if diff == 0:
       pass
@@ -136,9 +138,19 @@ class Trainer:
     if not tf_ratio:
       # TODO: Should probably come up with better logic to handle the 'null' case
       tf_ratio = 0.0
+
+    evaluate_on_epoch = True
+    num_iters_eval = self._cfg.experiment.hyperparameters.num_iters_eval
+    if num_iters_eval:
+      evaluate_on_epoch = False
+    min_iters = self._cfg.experiment.hyperparameters.min_iters
+    if not min_iters:
+      min_iters = 0
     epochs = self._cfg.experiment.hyperparameters.epochs
     optimizer = torch.optim.SGD(self._model.parameters(), lr=lr)
     criterion = nn.CrossEntropyLoss(weight=None, ignore_index=self._model._decoder.PAD_IDX)
+
+    num_iters = 0
 
     early_stoping = EarlyStopping(self._cfg.experiment.hyperparameters)
 
@@ -158,6 +170,7 @@ class Trainer:
       log.info("Computing metrics for 'train' dataset")
       self._model.train()
 
+      # train
       with tqdm(self._dataset.iterators['train']) as T:
         for batch in T:
 
@@ -180,31 +193,60 @@ class Trainer:
           meter(output, target)
 
           T.set_postfix(trn_loss='{:4.3f}'.format(loss.item()))
-        
-        meter.log(stage='train', step=epoch)
-        meter.reset()
-      
-      # Perform val, test, gen, ... passes
+
+          num_iters += 1
+
+          # eval on validation set
+          if not evaluate_on_epoch and num_iters % num_iters_eval == 0:
+            with torch.no_grad():
+              log.info("Computing metrics for 'val' dataset")
+              with tqdm(self._dataset.iterators['val']) as V:
+                val_loss = 0.0
+                for batch in V:
+
+                  output = self._model(batch).permute(1, 2, 0)
+                  target = batch.target.permute(1, 0)
+                  output, target = self._normalize_lengths(output, target)
+
+                  meter(output, target)
+
+                  # Compute average validation loss
+                  val_loss += F.cross_entropy(output, target) / len(batch)
+                  V.set_postfix(val_loss='{:4.3f}'.format(val_loss.item()))
+                
+                meter.log(stage='train', step=epoch)
+                meter.reset()
+
+            should_stop, should_save = early_stoping(val_loss, num_iters)
+            if should_save:
+              torch.save(self._model.state_dict(), 'model.pt')
+            if should_stop:
+              break
+
+      # don't evaluate twice on same iteration
+      if not num_iters % num_iters_eval == 0:
+        # Perform val, test, gen, ... passes
+        with torch.no_grad():
+
+          log.info("Computing metrics for 'val' dataset")
+          with tqdm(self._dataset.iterators['val']) as V:
+            val_loss = 0.0
+            for batch in V:
+
+              output = self._model(batch).permute(1, 2, 0)
+              target = batch.target.permute(1, 0)
+              output, target = self._normalize_lengths(output, target)
+
+              meter(output, target)
+
+              # Compute average validation loss
+              val_loss += F.cross_entropy(output, target) / len(batch)
+              V.set_postfix(val_loss='{:4.3f}'.format(val_loss.item()))
+
+            meter.log(stage='val', step=epoch)
+            meter.reset()
+
       with torch.no_grad():
-
-        log.info("Computing metrics for 'val' dataset")
-        with tqdm(self._dataset.iterators['val']) as V:
-          val_loss = 0.0
-          for batch in V:
-
-            output = self._model(batch).permute(1, 2, 0)
-            target = batch.target.permute(1, 0)
-            output, target = self._normalize_lengths(output, target)
-
-            meter(output, target)
-
-            # Compute average validation loss
-            val_loss = F.cross_entropy(output, target)
-            V.set_postfix(val_loss='{:4.3f}'.format(val_loss.item()))
-
-          meter.log(stage='val', step=epoch)
-          meter.reset()
-
         log.info("Computing metrics for 'test' dataset")
         with tqdm(self._dataset.iterators['test']) as T:
           for batch in T:
@@ -248,11 +290,12 @@ class Trainer:
             meter.log(stage=itr, step=epoch)
             meter.reset()
 
-      should_stop, should_save = early_stoping(val_loss)
-      if should_save:
-        torch.save(self._model.state_dict(), 'model.pt')
-      if should_stop:
-        break
+      if evaluate_on_epoch:
+        should_stop, should_save = early_stoping(val_loss, num_iters)
+        if should_save:
+          torch.save(self._model.state_dict(), 'model.pt')
+        if should_stop and num_iters >= min_iters:
+          break
 
   def eval(self, eval_cfg: DictConfig):
 
@@ -304,16 +347,6 @@ class Trainer:
         meter.log(stage=key, step=0)
         meter.reset()
 
-  def tpdr(self, tpdr_cfg: DictConfig):
-
-    # Load checkpoint data
-    self._load_checkpoint(tpdr_cfg.checkpoint_dir)
-
-    log.info("Beginning TPDR REPL")
-
-    repl = ModelArithmeticREPL(self._model, self._dataset)
-    repl.cmdloop()
-
   def repl(self, repl_cfg: DictConfig):
 
     # Load checkpoint data
@@ -323,7 +356,6 @@ class Trainer:
 
     repl = ModelREPL(self._model, self._dataset)
     repl.cmdloop()
-
 
 class ModelREPL(Cmd):
   """
@@ -348,7 +380,7 @@ class ModelREPL(Cmd):
     source = source.split(' ')
     source.append('<eos>')
     source.insert(0, '<sos>')
-    source = [self._model._encoder.to_ids([s]) for s in source]
+    source = [[self._dataset.source_field.vocab.stoi[s]] for s in source]
     source = torch.LongTensor(source)
 
     transf = ['<sos>', transf, '<eos>']
@@ -365,55 +397,17 @@ class ModelREPL(Cmd):
 
     batch = self.batchify(args)
 
-    prediction = self._model(batch, plot_trajectories=True).permute(1, 2, 0).argmax(1)
-    prediction = self._model._decoder.to_tokens(prediction)[0]
+    prediction = self._model(batch).permute(1, 2, 0).argmax(1)
+    prediction = self._dataset.id_to_token(prediction, 'target')[0]
     prediction = ' '.join(prediction)
 
-    source = self._model._encoder.to_tokens(batch.source.permute(1, 0))[0]
+    source = self._dataset.id_to_token(batch.source.permute(1, 0), 'source')[0]
     source = ' '.join(source)
 
-    transformation = self._model._decoder.to_tokens(batch.annotation.permute(1, 0))[0]
+    transformation = self._dataset.id_to_token(batch.annotation.permute(1, 0), 'source')[0]
     transformation = ' '.join(transformation)
 
     result = "{} → {} → {}".format(source, transformation, prediction)
-    log.info(result)
-
-  
-  def do_quit(self, args):
-    log.info("Exiting REPL.")
-    raise SystemExit
-
-class ModelArithmeticREPL(ModelREPL):
-  """
-  A REPL for doing expression math
-  """
-
-  prompt = 'λ '
-
-  def default(self, args):
-
-    expr_list = re.split("\[|\]", args)
-    expr_list = list(filter(None, [e.strip() for e in expr_list]))
-
-    transform = expr_list[0]
-    unbatched_expressions = expr_list[1:]
-
-    expressions = []
-
-    for e in unbatched_expressions:
-      if e in "+-":
-        expressions.append(e)
-      else:
-        batch = self.batchify(f"{transform} {e}")
-        expressions.append(batch)
-    
-    prediction = self._model.forward_expression(expressions).permute(1, 2, 0).argmax(1)
-    prediction = self._model._decoder.to_tokens(prediction)[0]
-    prediction = ' '.join(prediction)
-
-    source = ' '.join(args.split(' ')[1:])
-
-    result = "{} = {}".format(source, prediction)
     log.info(result)
   
   def do_quit(self, args):
