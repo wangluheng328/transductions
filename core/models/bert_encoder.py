@@ -5,8 +5,11 @@
 from typing import List
 from torch import nn, Tensor
 from omegaconf import DictConfig
-from transformers import DistilBertModel, DistilBertConfig, DistilBertTokenizer
+from transformers import (
+        DistilBertModel, DistilBertConfig, DistilBertTokenizer,
+        RobertaModel, RobertaConfig, RobertaTokenizer)
 from transformers.models.distilbert.modeling_distilbert import Embeddings
+from transformers.models.roberta.modeling_roberta import RobertaEmbeddings
 
 # Library imports
 from core.models.model_io import ModelIO
@@ -25,6 +28,18 @@ class PositionalBertEmbeddings(Embeddings):
       embeddings = self.pos_enc(embeddings)
 
       return embeddings
+
+class PositionalRobertaEmbeddings(RobertaEmbeddings):
+  
+  def __init__(self, config):
+    super().__init__(config)
+    self.pos_enc = PositionalEncoding(768)
+
+  def forward(self, input_ids):
+    embeddings = super().forward(input_ids)
+    embeddings = self.pos_enc(embeddings)
+    return embeddings
+
 
 class BERTEncoder(TransductionComponent):
 
@@ -71,6 +86,69 @@ class BERTEncoder(TransductionComponent):
 
   def forward(self, enc_input: ModelIO) -> ModelIO:
 
+    embedded = self.module(enc_input.source)
+    encoded = self.unit(embedded.last_hidden_state)
+    return ModelIO({"enc_outputs" : encoded})
+
+  def to_tokens(self, idx_tensor: Tensor, show_special=False):
+
+    outputs = idx_tensor.detach().cpu().numpy()
+    batch_strings = []
+    for o in outputs:
+      batch_strings.append(self.tokenizer.convert_ids_to_tokens(
+        o,
+        skip_special_tokens = not show_special
+      ))
+
+    return batch_strings
+  
+  def to_ids(self, tokens: List):
+    return self.tokenizer.convert_tokens_to_ids(tokens)
+
+
+class RoBERTaEncoder(TransductionComponent):
+  @property
+  def hidden_size(self) -> int:
+    return 768
+  
+  @property
+  def num_heads(self) -> int:
+    return 12
+  
+  @property
+  def num_layers(self) -> int:
+    return 12
+
+  @property
+  def is_frozen(self) -> bool:
+    return bool(self.cfg.should_freeze)
+
+  def __init__(self, cfg: DictConfig):
+
+    super().__init__(cfg)
+
+    config = RobertaConfig.from_pretrained('roberta-base')
+    config.sinusoidal_pos_embds = True
+
+    self.module = RobertaModel.from_pretrained(
+      'roberta-base', 
+      config=config
+    )
+
+    self.tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+
+    # Add in our own positional encodings
+    embedding_layer = PositionalRobertaEmbeddings(self.module.config)
+    # self.module.embeddings = embedding_layer
+
+    if self.is_frozen:
+      for param in self.module.parameters():
+        param.requires_grad = False
+    
+    layer = nn.TransformerEncoderLayer(self.hidden_size, self.num_heads)
+    self.unit = nn.TransformerEncoder(layer, num_layers=self.num_layers)
+
+  def forward(self, enc_input: ModelIO) -> ModelIO:
     embedded = self.module(enc_input.source)
     encoded = self.unit(embedded.last_hidden_state)
     return ModelIO({"enc_outputs" : encoded})

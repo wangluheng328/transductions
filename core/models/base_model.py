@@ -6,12 +6,12 @@ import torch
 import logging
 from omegaconf import DictConfig
 from torchtext.vocab import Vocab
-from torchtext.legacy.data.batch import Batch
+from torchtext.data.batch import Batch
 from transformers.utils.dummy_pt_objects import BertModel
 
 # library imports
 from core.models.sequence_encoder import SequenceEncoder
-from core.models.bert_encoder import BERTEncoder
+from core.models.bert_encoder import BERTEncoder,RoBERTaEncoder
 from core.models.sequence_decoder import SequenceDecoder, BetterSequenceDecoder
 from core.models.model_io import ModelIO
 from core.dataset.base_dataset import TransductionDataset

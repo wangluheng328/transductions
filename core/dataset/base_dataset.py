@@ -7,8 +7,8 @@ from omegaconf import DictConfig
 from typing import Dict
 import shutil
 import pickle
-from torchtext.legacy.data import Field, TabularDataset, BucketIterator
-from transformers import DistilBertTokenizer
+from torchtext.data import Field, TabularDataset, BucketIterator
+from transformers import DistilBertTokenizer, RobertaTokenizer
 
 log = logging.getLogger(__name__)
 
@@ -138,7 +138,7 @@ class TransductionDataset:
         if split in ['train', 'test', 'val']:
           self._in_sample_data.append(dataset)
 
-  def __init__(self, cfg: DictConfig, device, fields: Dict = None, BERT = False):
+  def __init__(self, cfg: DictConfig, device, fields: Dict = None, BERT = False, ROBERTA = False):
 
     log.info("Initializing dataset")
 
@@ -176,12 +176,17 @@ class TransductionDataset:
         self.target_field = fields['target']
 
         if self.source_field is None:
-          tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased') if BERT else str.split
-          lower = False if BERT else True
-          pad = tokenizer.convert_tokens_to_ids(tokenizer.pad_token) if BERT else '<pad>'
-          sos = tokenizer.convert_tokens_to_ids(tokenizer.bos_token) if BERT else '<sos>'
-          eos = None if BERT else '<eos>'
-          tok_fun = tokenizer.encode if BERT else tokenizer
+          if BERT:
+            tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+          elif ROBERTA:
+            tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+          else:
+            tokenizer = str.split
+          lower = False if BERT or ROBERTA else True
+          pad = tokenizer.convert_tokens_to_ids(tokenizer.pad_token) if BERT or ROBERTA else '<pad>'
+          sos = tokenizer.convert_tokens_to_ids(tokenizer.bos_token) if BERT or ROBERTA else '<sos>'
+          eos = None if BERT or ROBERTA else '<eos>'
+          tok_fun = tokenizer.encode if BERT or ROBERTA else tokenizer
           self.source_field = Field(lower=lower, eos_token=eos, init_token=sos,
                                       tokenize=tok_fun, use_vocab=lower, pad_token=pad)
       else:
@@ -189,12 +194,17 @@ class TransductionDataset:
     else:
       log.info("Constructing fields from dataset.")
       if source_format == 'sequence' and target_format == 'sequence':
-        tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased') if BERT else str.split
-        lower = False if BERT else True
-        pad = tokenizer.convert_tokens_to_ids(tokenizer.pad_token) if BERT else '<pad>'
-        sos = tokenizer.convert_tokens_to_ids(tokenizer.bos_token) if BERT else '<sos>'
-        eos = None if BERT else '<eos>'
-        tok_fun = tokenizer.encode if BERT else tokenizer
+        if BERT:
+          tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+        elif ROBERTA:
+          tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+        else:
+          tokenizer = str.split
+        lower = False if BERT or ROBERTA else True
+        pad = tokenizer.convert_tokens_to_ids(tokenizer.pad_token) if BERT or ROBERTA else '<pad>'
+        sos = tokenizer.convert_tokens_to_ids(tokenizer.bos_token) if BERT or ROBERTA else '<sos>'
+        eos = None if BERT or ROBERTA else '<eos>'
+        tok_fun = tokenizer.encode if BERT or ROBERTA else tokenizer
         self.source_field = Field(lower=lower, eos_token=eos, init_token=sos,
                                     tokenize=tok_fun, use_vocab=lower, pad_token=pad)
         self.target_field = Field(lower=True, eos_token='<eos>', init_token='<sos>') 
@@ -205,7 +215,7 @@ class TransductionDataset:
     self._create_iterators(cfg)
 
     if fields is None:
-      if not BERT:
+      if not BERT and not ROBERTA:
         self.source_field.build_vocab(*self._in_sample_data)
         pickle.dump(self.source_field, open('source.pt', 'wb'))	
         

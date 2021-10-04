@@ -12,7 +12,7 @@ from omegaconf import DictConfig
 from typing import Dict, Tuple
 from cmd import Cmd
 import pickle
-from torchtext.legacy.data import Batch
+from torchtext.data import Batch
 from torchtext.vocab import Vocab
 import re
 
@@ -91,12 +91,13 @@ class Trainer:
 
   def _load_dataset(self, cfg: DictConfig, from_paths: Dict = None):
 
-    BERT = cfg.model.encoder.unit == 'BERT'
+    BERT = cfg.model.encoder.unit == "BERT"
+    ROBERTA = cfg.model.encoder.unit.upper == "ROBERTA"
 
     if from_paths is not None:
       src_field = pickle.load(open(from_paths['source'], 'rb')) if not BERT else None
       tgt_field = pickle.load(open(from_paths['target'], 'rb'))
-      dataset = TransductionDataset(cfg, self._device, {'source': src_field, 'target': tgt_field}, BERT=BERT)
+      dataset = TransductionDataset(cfg, self._device, {'source': src_field, 'target': tgt_field}, BERT=BERT, ROBERTA=ROBERTA)
     else:
       dataset = TransductionDataset(cfg, self._device, BERT=BERT)
     

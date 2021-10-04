@@ -12,7 +12,7 @@ import numpy as np
 
 # Library imports
 from core.models.model_io import ModelIO
-from core.models.bert_encoder import BERTEncoder
+from core.models.bert_encoder import BERTEncoder,RoBERTaEncoder
 from core.models.components import TransductionComponent
 from core.models.positional_encoding import PositionalEncoding
 
@@ -32,6 +32,8 @@ class SequenceEncoder(TransductionComponent):
     
     if unit_type == "BERT":
       return BERTEncoder(cfg=cfg)
+    elif unit_type == "ROBERTA":
+      return RoBERTaEncoder(cfg=cfg)
     else:
       return TransductionSequenceEncoder(cfg=cfg, vocab=vocab)
 
