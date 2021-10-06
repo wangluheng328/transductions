@@ -7,7 +7,7 @@ from omegaconf import DictConfig
 from typing import Dict
 import shutil
 import pickle
-from torchtext.data import Field, TabularDataset, BucketIterator
+from torchtext.legacy.data import Field, TabularDataset, BucketIterator
 from transformers import DistilBertTokenizer, RobertaTokenizer
 
 log = logging.getLogger(__name__)
