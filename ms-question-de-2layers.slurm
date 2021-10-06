@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=ms-question
+#SBATCH --job-name=ms-question-de-2layers
 #SBATCH --open-mode=append
 #SBATCH --output=./%j_%x.out
 #SBATCH --error=./%j_%x.err
