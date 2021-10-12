@@ -159,10 +159,11 @@ class Trainer:
     seq_acc = SequenceAccuracy()
     tok_acc = TokenAccuracy(self._dataset.target_field.vocab.stoi['<pad>'])
     len_acc = LengthAccuracy(self._dataset.target_field.vocab.stoi['<pad>'])
-    first_acc = NthTokenAccuracy(n=2)
+    first_acc = NthTokenAccuracy(n=1)
+    second_acc = NthTokenAccuracy(n=2)
     avg_loss = LossMetric(F.cross_entropy)
     
-    meter = Meter([seq_acc, tok_acc, len_acc, first_acc, avg_loss])
+    meter = Meter([seq_acc, tok_acc, len_acc, first_acc, second_acc, avg_loss])
 
     for epoch in range(epochs):
 
@@ -307,10 +308,11 @@ class Trainer:
     seq_acc = SequenceAccuracy()
     tok_acc = TokenAccuracy(self._dataset.target_field.vocab.stoi['<pad>'])
     len_acc = LengthAccuracy(self._dataset.target_field.vocab.stoi['<pad>'])
-    first_acc = NthTokenAccuracy(n=2)
+    first_acc = NthTokenAccuracy(n=1)
+    second_acc = NthTokenAccuracy(n=2)
     avg_loss = LossMetric(F.cross_entropy)
 
-    meter = Meter([seq_acc, tok_acc, len_acc, first_acc, avg_loss])
+    meter = Meter([seq_acc, tok_acc, len_acc, first_acc, second,_acc, avg_loss])
 
     log.info("Beginning evaluation")
     self._model.eval()
