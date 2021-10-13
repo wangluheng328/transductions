@@ -312,7 +312,7 @@ class Trainer:
     second_acc = NthTokenAccuracy(n=2)
     avg_loss = LossMetric(F.cross_entropy)
 
-    meter = Meter([seq_acc, tok_acc, len_acc, first_acc, second,_acc, avg_loss])
+    meter = Meter([seq_acc, tok_acc, len_acc, first_acc, second_acc, avg_loss])
 
     log.info("Beginning evaluation")
     self._model.eval()
