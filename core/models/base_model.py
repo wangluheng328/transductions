@@ -6,7 +6,7 @@ import torch
 import logging
 from omegaconf import DictConfig
 from torchtext.vocab import Vocab
-from torchtext.data.batch import Batch
+from torchtext.legacy.data import Batch
 from transformers.utils.dummy_pt_objects import BertModel
 
 # library imports

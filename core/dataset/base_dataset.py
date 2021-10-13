@@ -7,6 +7,7 @@ from omegaconf import DictConfig
 from typing import Dict
 import shutil
 import pickle
+import torch
 from torchtext.legacy.data import Field, TabularDataset, BucketIterator
 from transformers import DistilBertTokenizer, RobertaTokenizer
 
@@ -34,6 +35,35 @@ class TransductionDataset:
       log.error("`transform_field` must be either 'source' or 'target'; you supplied {}!".format(self.trns_field))
       raise ValueError("Invalid `transform_field`: {}".format(self.trns_field))
 
+  def id_to_token(self, idx_tensor, vocab_str: str, show_special=False, BERT=False, ROBERTA=False):
+    '''
+    if BERT:
+      tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+    elif ROBERTA:
+      tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+    else:
+      raise NotImplementedError
+
+    out_tokens = [tokenizer.convert_ids_to_tokens(tensor) for tensor in idx_tensor]
+    print(out_tokens[0])
+    return out_tokens
+    '''
+    vocab = self.source_field.vocab if vocab_str == 'source' else self.target_field.vocab
+    outputs = np.empty(idx_tensor.detach().cpu().numpy().shape, dtype=object)
+
+    for idr, r in enumerate(idx_tensor):
+      for idc, _ in enumerate(r):
+        string = vocab.itos[idx_tensor[idr][idc]]
+        if string not in ['<sos>', '<eos>', '<pad>'] or show_special:
+          outputs[idr][idc] = vocab.itos[idx_tensor[idr][idc]]
+
+    batch_strings = []
+    for r in outputs:
+      batch_strings.append(r[r != np.array(None)])
+
+    # print(batch_strings[0])
+
+    return batch_strings
   
   def _process_raw_data(self, cfg: DictConfig):
     """

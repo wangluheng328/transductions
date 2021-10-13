@@ -318,6 +318,8 @@ class Trainer:
     self._model.eval()
 
     for key in list(self._dataset.iterators.keys()):
+      if key == "train":
+        continue
 
       log.info('Evaluating model on {} dataset'.format(key))
 
