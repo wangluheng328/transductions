@@ -14,5 +14,5 @@ singularity exec --nv --overlay $SCRATCH/overlay-25GB-500K.ext3:ro /scratch/work
 source /ext3/env.sh
 conda activate
 
-python ./eval.py checkpoint_dir=outputs\ms-question\LSTM-Multiplicative\2021-09-29_15-43-00\
+python ../../../../eval.py checkpoint_dir=outputs\ms-question\LSTM-Multiplicative\2021-09-29_15-43-00\
 "
