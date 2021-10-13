@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=experiment
+#SBATCH --job-name=eval-q-e-l-1
 #SBATCH --open-mode=append
 #SBATCH --output=./%j_%x.out
 #SBATCH --error=./%j_%x.err
