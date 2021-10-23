@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=passiv-de-lstm-2layers
 #SBATCH --open-mode=append
-#SBATCH --output=../out_and_err/%j_%x.out
-#SBATCH --error=../out_and_err/%j_%x.err
+#SBATCH --output=./out_and_err/%j_%x.out
+#SBATCH --error=./out_and_err/%j_%x.err
 #SBATCH --export=ALL
 #SBATCH --time=5:00:00
 #SBATCH --gres=gpu:1
@@ -14,5 +14,5 @@ singularity exec --nv --overlay $SCRATCH/overlay-25GB-500K.ext3:ro /scratch/work
 source /ext3/env.sh
 conda activate
 
-python ../train.py experiment=passiv-de-lstm-2layers
+python ./train.py experiment=passiv-de-lstm-2layers
 "

@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=passiv-en-transformer-2layers
 #SBATCH --open-mode=append
-#SBATCH --output=../out_and_err/%j_%x.out
-#SBATCH --error=../out_and_err/%j_%x.err
+#SBATCH --output=./out_and_err/%j_%x.out
+#SBATCH --error=./out_and_err/%j_%x.err
 #SBATCH --export=ALL
 #SBATCH --time=5:00:00
 #SBATCH --gres=gpu:1
