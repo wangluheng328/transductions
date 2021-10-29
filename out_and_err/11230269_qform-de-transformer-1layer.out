@@ -1,0 +1,2457 @@
+experiment:
+  dataset:
+    name: ms-question-de
+    input: ms-question.tsv
+    source_format: sequence
+    target_format: sequence
+    overwrite: false
+    transform_field: target
+    splits:
+      train: 80
+      test: 10
+      val: 10
+  hyperparameters:
+    epochs: 50
+    batch_size: 5
+    lr: 0.001
+    tolerance: 0.0001
+    num_iters_eval: 1000
+    min_iters: 30000
+    patience: 5
+    tf_ratio: 0.5
+    cuda: 0
+  model:
+    name: Transformer
+    encoder:
+      unit: Transformer
+      type: sequence
+      dropout: 0
+      num_layers: 1
+      hidden_size: 256
+      embedding_size: 256
+      num_heads: 8
+    decoder:
+      unit: Transformer
+      type: sequence
+      dropout: 0
+      num_layers: 1
+      max_length: 30
+      hidden_size: 256
+      embedding_size: 256
+      num_heads: 8
+      attention: null
+  name: qform-de-transformer-1layer
+pretty_print: true
+
+[2021-10-27 08:22:09,425][core.trainer][INFO] - DEVICE: cuda
+[2021-10-27 08:22:09,425][core.dataset.base_dataset][INFO] - Initializing dataset
+[2021-10-27 08:22:09,426][core.dataset.base_dataset][INFO] - Constructing fields from dataset.
+[2021-10-27 08:22:12,739][core.trainer][INFO] - TransductionDataset(
+ splits: [val (1000 sequences), train (100000 sequences), test (10000 sequences), gen (10000 sequences)]
+ fields: [source, annotation, target]
+)
+[2021-10-27 08:22:12,739][core.models.base_model][INFO] - Initializing model
+[2021-10-27 08:22:18,693][core.trainer][INFO] - TransductionModel(
+  (_encoder): TransductionSequenceEncoder(
+    (module): Sequential(
+      (0): Sequential(
+        (0): Embedding(104, 256)
+        (1): PositionalEncoding(
+          (dropout): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (1): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=256, out_features=256, bias=True)
+            )
+            (linear1): Linear(in_features=256, out_features=2048, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (linear2): Linear(in_features=2048, out_features=256, bias=True)
+            (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.1, inplace=False)
+            (dropout2): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+    )
+  )
+  (_decoder): TransformerSequenceDecoder(
+    (_embedding): Sequential(
+      (0): Embedding(107, 256)
+      (1): PositionalEncoding(
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (_unit): TransformerDecoder(
+      (layers): ModuleList(
+        (0): TransformerDecoderLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=256, out_features=256, bias=True)
+          )
+          (multihead_attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=256, out_features=256, bias=True)
+          )
+          (linear1): Linear(in_features=256, out_features=2048, bias=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=2048, out_features=256, bias=True)
+          (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (dropout1): Dropout(p=0.0, inplace=False)
+          (dropout2): Dropout(p=0.0, inplace=False)
+          (dropout3): Dropout(p=0.0, inplace=False)
+        )
+      )
+    )
+    (_out): Linear(in_features=256, out_features=107, bias=True)
+  )
+)
+[2021-10-27 08:22:18,694][core.trainer][INFO] - Beginning training
+[2021-10-27 08:22:18,697][core.metrics.meter][INFO] - Logging with tensorboard; view with `tensorboard --logdir=/scratch/lw2534/lab/transductions/outputs/qform-de-transformer-1layer/Transformer/2021-10-27_08-22-09/tensorboard`
+[2021-10-27 08:22:18,701][core.trainer][INFO] - EPOCH 1 / 50
+[2021-10-27 08:22:18,701][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 08:22:35,476][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:22:36,989][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.101
+LengthAccuracy:	0.252
+1st Token Accuracy:	0.063
+2nd Token Accuracy:	0.001
+Average Loss:	4.196
+[2021-10-27 08:22:53,050][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:22:55,180][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.132
+LengthAccuracy:	0.204
+1st Token Accuracy:	0.114
+2nd Token Accuracy:	0.001
+Average Loss:	3.940
+[2021-10-27 08:23:13,442][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:23:16,394][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.163
+LengthAccuracy:	0.415
+1st Token Accuracy:	0.155
+2nd Token Accuracy:	0.002
+Average Loss:	3.783
+[2021-10-27 08:23:35,534][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:23:38,505][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.184
+LengthAccuracy:	0.508
+1st Token Accuracy:	0.222
+2nd Token Accuracy:	0.021
+Average Loss:	3.663
+[2021-10-27 08:23:57,795][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:24:00,742][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.206
+LengthAccuracy:	0.551
+1st Token Accuracy:	0.356
+2nd Token Accuracy:	0.038
+Average Loss:	3.560
+[2021-10-27 08:24:19,965][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:24:22,865][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.224
+LengthAccuracy:	0.530
+1st Token Accuracy:	0.414
+2nd Token Accuracy:	0.083
+Average Loss:	3.462
+[2021-10-27 08:24:42,473][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:24:45,384][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.242
+LengthAccuracy:	0.522
+1st Token Accuracy:	0.469
+2nd Token Accuracy:	0.118
+Average Loss:	3.359
+[2021-10-27 08:25:04,910][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:25:07,833][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.262
+LengthAccuracy:	0.528
+1st Token Accuracy:	0.519
+2nd Token Accuracy:	0.141
+Average Loss:	3.249
+[2021-10-27 08:25:27,967][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:25:30,851][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.279
+LengthAccuracy:	0.546
+1st Token Accuracy:	0.548
+2nd Token Accuracy:	0.150
+Average Loss:	3.150
+[2021-10-27 08:25:50,844][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:25:53,806][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.301
+LengthAccuracy:	0.606
+1st Token Accuracy:	0.592
+2nd Token Accuracy:	0.203
+Average Loss:	3.023
+[2021-10-27 08:26:14,030][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:26:17,016][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.318
+LengthAccuracy:	0.630
+1st Token Accuracy:	0.642
+2nd Token Accuracy:	0.237
+Average Loss:	2.926
+[2021-10-27 08:26:37,422][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:26:40,391][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.335
+LengthAccuracy:	0.657
+1st Token Accuracy:	0.672
+2nd Token Accuracy:	0.308
+Average Loss:	2.839
+[2021-10-27 08:27:00,919][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:27:03,860][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.361
+LengthAccuracy:	0.663
+1st Token Accuracy:	0.753
+2nd Token Accuracy:	0.364
+Average Loss:	2.745
+[2021-10-27 08:27:24,528][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:27:27,536][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.384
+LengthAccuracy:	0.714
+1st Token Accuracy:	0.828
+2nd Token Accuracy:	0.439
+Average Loss:	2.635
+[2021-10-27 08:27:48,168][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:27:51,161][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.409
+LengthAccuracy:	0.724
+1st Token Accuracy:	0.885
+2nd Token Accuracy:	0.498
+Average Loss:	2.548
+[2021-10-27 08:28:11,997][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:28:14,999][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.431
+LengthAccuracy:	0.772
+1st Token Accuracy:	0.931
+2nd Token Accuracy:	0.551
+Average Loss:	2.451
+[2021-10-27 08:28:35,913][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:28:38,918][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.448
+LengthAccuracy:	0.792
+1st Token Accuracy:	0.960
+2nd Token Accuracy:	0.604
+Average Loss:	2.380
+[2021-10-27 08:29:00,027][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:29:03,059][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.476
+LengthAccuracy:	0.822
+1st Token Accuracy:	0.973
+2nd Token Accuracy:	0.651
+Average Loss:	2.269
+[2021-10-27 08:29:24,026][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:29:27,073][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.495
+LengthAccuracy:	0.852
+1st Token Accuracy:	0.980
+2nd Token Accuracy:	0.687
+Average Loss:	2.185
+[2021-10-27 08:29:47,960][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:29:50,982][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.515
+LengthAccuracy:	0.852
+1st Token Accuracy:	0.988
+2nd Token Accuracy:	0.713
+Average Loss:	2.090
+[2021-10-27 08:29:51,359][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 08:30:20,459][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.479
+LengthAccuracy:	0.806
+1st Token Accuracy:	0.990
+2nd Token Accuracy:	0.718
+Average Loss:	2.235
+[2021-10-27 08:30:20,460][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 08:30:52,766][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.335
+LengthAccuracy:	0.298
+1st Token Accuracy:	0.243
+2nd Token Accuracy:	0.835
+Average Loss:	2.775
+[2021-10-27 08:30:52,766][core.trainer][INFO] - EPOCH 2 / 50
+[2021-10-27 08:30:52,766][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 08:31:13,613][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:31:16,673][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.537
+LengthAccuracy:	0.888
+1st Token Accuracy:	0.991
+2nd Token Accuracy:	0.744
+Average Loss:	1.986
+[2021-10-27 08:31:37,628][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:31:40,677][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.546
+LengthAccuracy:	0.889
+1st Token Accuracy:	0.991
+2nd Token Accuracy:	0.757
+Average Loss:	1.925
+[2021-10-27 08:32:01,799][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:32:04,859][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.565
+LengthAccuracy:	0.895
+1st Token Accuracy:	0.992
+2nd Token Accuracy:	0.801
+Average Loss:	1.824
+[2021-10-27 08:32:25,797][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:32:28,838][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.001
+TokenAccuracy:	0.584
+LengthAccuracy:	0.895
+1st Token Accuracy:	0.996
+2nd Token Accuracy:	0.834
+Average Loss:	1.740
+[2021-10-27 08:32:49,902][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:32:52,918][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.001
+TokenAccuracy:	0.600
+LengthAccuracy:	0.881
+1st Token Accuracy:	0.996
+2nd Token Accuracy:	0.871
+Average Loss:	1.659
+[2021-10-27 08:33:13,849][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:33:16,896][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.003
+TokenAccuracy:	0.619
+LengthAccuracy:	0.892
+1st Token Accuracy:	0.997
+2nd Token Accuracy:	0.911
+Average Loss:	1.570
+[2021-10-27 08:33:38,037][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:33:41,070][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.006
+TokenAccuracy:	0.637
+LengthAccuracy:	0.898
+1st Token Accuracy:	0.998
+2nd Token Accuracy:	0.940
+Average Loss:	1.489
+[2021-10-27 08:34:02,073][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:34:05,128][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.016
+TokenAccuracy:	0.662
+LengthAccuracy:	0.904
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.969
+Average Loss:	1.383
+[2021-10-27 08:34:26,215][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:34:29,266][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.039
+TokenAccuracy:	0.688
+LengthAccuracy:	0.912
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.979
+Average Loss:	1.282
+[2021-10-27 08:34:50,526][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:34:53,586][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.065
+TokenAccuracy:	0.705
+LengthAccuracy:	0.919
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.988
+Average Loss:	1.205
+[2021-10-27 08:35:14,631][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:35:17,675][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.109
+TokenAccuracy:	0.733
+LengthAccuracy:	0.918
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.991
+Average Loss:	1.099
+[2021-10-27 08:35:38,687][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:35:41,746][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.156
+TokenAccuracy:	0.758
+LengthAccuracy:	0.926
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.994
+Average Loss:	1.007
+[2021-10-27 08:36:02,803][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:36:05,861][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.200
+TokenAccuracy:	0.771
+LengthAccuracy:	0.924
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.994
+Average Loss:	0.950
+[2021-10-27 08:36:27,056][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:36:30,111][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.243
+TokenAccuracy:	0.794
+LengthAccuracy:	0.928
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.994
+Average Loss:	0.862
+[2021-10-27 08:36:51,413][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:36:54,471][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.283
+TokenAccuracy:	0.807
+LengthAccuracy:	0.930
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.996
+Average Loss:	0.806
+[2021-10-27 08:37:15,463][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:37:18,512][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.320
+TokenAccuracy:	0.828
+LengthAccuracy:	0.931
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.998
+Average Loss:	0.727
+[2021-10-27 08:37:39,805][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:37:42,854][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.351
+TokenAccuracy:	0.835
+LengthAccuracy:	0.935
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.997
+Average Loss:	0.690
+[2021-10-27 08:38:03,992][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:38:07,043][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.399
+TokenAccuracy:	0.850
+LengthAccuracy:	0.933
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.998
+Average Loss:	0.626
+[2021-10-27 08:38:28,239][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:38:31,311][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.439
+TokenAccuracy:	0.862
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.587
+[2021-10-27 08:38:52,497][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:38:55,562][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.486
+TokenAccuracy:	0.877
+LengthAccuracy:	0.929
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.997
+Average Loss:	0.541
+[2021-10-27 08:38:55,824][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 08:39:25,459][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.520
+TokenAccuracy:	0.857
+LengthAccuracy:	0.936
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.998
+Average Loss:	0.591
+[2021-10-27 08:39:25,459][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 08:39:59,842][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.002
+TokenAccuracy:	0.513
+LengthAccuracy:	0.929
+1st Token Accuracy:	0.199
+2nd Token Accuracy:	0.985
+Average Loss:	1.914
+[2021-10-27 08:39:59,842][core.trainer][INFO] - EPOCH 3 / 50
+[2021-10-27 08:39:59,843][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 08:40:20,946][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:40:24,014][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.553
+TokenAccuracy:	0.891
+LengthAccuracy:	0.939
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.998
+Average Loss:	0.480
+[2021-10-27 08:40:45,211][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:40:48,271][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.592
+TokenAccuracy:	0.908
+LengthAccuracy:	0.936
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.998
+Average Loss:	0.437
+[2021-10-27 08:41:09,420][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:41:12,488][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.638
+TokenAccuracy:	0.916
+LengthAccuracy:	0.936
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.999
+Average Loss:	0.407
+[2021-10-27 08:41:33,575][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:41:36,638][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.667
+TokenAccuracy:	0.928
+LengthAccuracy:	0.940
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.997
+Average Loss:	0.362
+[2021-10-27 08:41:57,796][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:42:00,859][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.690
+TokenAccuracy:	0.933
+LengthAccuracy:	0.935
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.999
+Average Loss:	0.340
+[2021-10-27 08:42:22,128][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:42:25,183][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.707
+TokenAccuracy:	0.940
+LengthAccuracy:	0.948
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.998
+Average Loss:	0.303
+[2021-10-27 08:42:46,401][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:42:49,466][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.719
+TokenAccuracy:	0.942
+LengthAccuracy:	0.941
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.998
+Average Loss:	0.301
+[2021-10-27 08:43:10,653][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:43:13,722][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.729
+TokenAccuracy:	0.948
+LengthAccuracy:	0.932
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.280
+[2021-10-27 08:43:13,824][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:43:13,825][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:43:34,852][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:43:37,914][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.737
+TokenAccuracy:	0.951
+LengthAccuracy:	0.934
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.269
+[2021-10-27 08:43:58,931][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:44:02,013][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.756
+TokenAccuracy:	0.955
+LengthAccuracy:	0.937
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.999
+Average Loss:	0.245
+[2021-10-27 08:44:23,345][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:44:26,407][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.764
+TokenAccuracy:	0.957
+LengthAccuracy:	0.941
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	1.000
+Average Loss:	0.232
+[2021-10-27 08:44:47,637][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:44:50,701][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.764
+TokenAccuracy:	0.957
+LengthAccuracy:	0.937
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.999
+Average Loss:	0.234
+[2021-10-27 08:44:50,761][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:44:50,788][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:45:11,770][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:45:14,840][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.789
+TokenAccuracy:	0.962
+LengthAccuracy:	0.935
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.215
+[2021-10-27 08:45:36,180][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:45:39,241][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.781
+TokenAccuracy:	0.961
+LengthAccuracy:	0.938
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.999
+Average Loss:	0.216
+[2021-10-27 08:46:00,458][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:46:03,510][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.789
+TokenAccuracy:	0.963
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.209
+[2021-10-27 08:46:24,672][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:46:27,731][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.794
+TokenAccuracy:	0.965
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.194
+[2021-10-27 08:46:48,816][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:46:51,876][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.797
+TokenAccuracy:	0.966
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.192
+[2021-10-27 08:47:12,965][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:47:16,028][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.797
+TokenAccuracy:	0.968
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.181
+[2021-10-27 08:47:37,064][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:47:40,121][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.815
+TokenAccuracy:	0.970
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.178
+[2021-10-27 08:48:01,338][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:48:04,395][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.821
+TokenAccuracy:	0.973
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.168
+[2021-10-27 08:48:04,624][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 08:48:34,166][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.815
+TokenAccuracy:	0.968
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.189
+[2021-10-27 08:48:34,166][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 08:49:08,501][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.014
+TokenAccuracy:	0.603
+LengthAccuracy:	0.960
+1st Token Accuracy:	0.118
+2nd Token Accuracy:	1.000
+Average Loss:	1.815
+[2021-10-27 08:49:08,502][core.trainer][INFO] - EPOCH 4 / 50
+[2021-10-27 08:49:08,502][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 08:49:29,582][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:49:32,636][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.816
+TokenAccuracy:	0.973
+LengthAccuracy:	0.935
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	1.000
+Average Loss:	0.178
+[2021-10-27 08:49:32,704][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:49:32,729][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:49:53,586][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:49:56,646][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.822
+TokenAccuracy:	0.974
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.165
+[2021-10-27 08:50:17,783][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:50:20,850][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.822
+TokenAccuracy:	0.977
+LengthAccuracy:	0.935
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.164
+[2021-10-27 08:50:41,949][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:50:45,008][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.837
+TokenAccuracy:	0.979
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.148
+[2021-10-27 08:51:06,149][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:51:09,202][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.846
+TokenAccuracy:	0.979
+LengthAccuracy:	0.947
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	1.000
+Average Loss:	0.145
+[2021-10-27 08:51:09,260][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:51:09,285][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:51:30,263][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:51:33,325][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.838
+TokenAccuracy:	0.977
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.149
+[2021-10-27 08:51:33,384][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 08:51:33,409][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:51:54,364][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:51:57,426][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.845
+TokenAccuracy:	0.978
+LengthAccuracy:	0.943
+1st Token Accuracy:	0.999
+2nd Token Accuracy:	0.999
+Average Loss:	0.149
+[2021-10-27 08:51:57,484][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 08:51:57,508][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:52:18,511][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:52:21,572][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.848
+TokenAccuracy:	0.981
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.138
+[2021-10-27 08:52:42,688][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:52:45,757][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.857
+TokenAccuracy:	0.983
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.135
+[2021-10-27 08:52:45,814][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:52:45,839][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:53:06,735][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:53:09,800][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.855
+TokenAccuracy:	0.983
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.141
+[2021-10-27 08:53:09,867][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 08:53:09,892][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:53:30,858][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:53:33,919][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.857
+TokenAccuracy:	0.984
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.134
+[2021-10-27 08:53:33,976][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 08:53:34,003][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:53:54,918][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:53:57,981][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.865
+TokenAccuracy:	0.984
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.129
+[2021-10-27 08:53:58,053][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 08:53:58,077][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:54:18,905][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:54:21,961][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.869
+TokenAccuracy:	0.986
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	0.999
+Average Loss:	0.127
+[2021-10-27 08:54:22,019][core.early_stopping][INFO] - Early stopping counter: 5 / 5
+[2021-10-27 08:54:22,046][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:54:22,046][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 08:54:51,595][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.865
+TokenAccuracy:	0.982
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.139
+[2021-10-27 08:54:51,595][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 08:55:25,945][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.011
+TokenAccuracy:	0.621
+LengthAccuracy:	0.970
+1st Token Accuracy:	0.088
+2nd Token Accuracy:	0.999
+Average Loss:	1.836
+[2021-10-27 08:55:25,945][core.trainer][INFO] - EPOCH 5 / 50
+[2021-10-27 08:55:25,945][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 08:55:46,949][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:55:50,013][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.873
+TokenAccuracy:	0.986
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.128
+[2021-10-27 08:56:11,348][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:56:14,417][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.869
+TokenAccuracy:	0.986
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.127
+[2021-10-27 08:56:14,475][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:56:14,499][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:56:35,413][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:56:38,483][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.881
+TokenAccuracy:	0.987
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.123
+[2021-10-27 08:56:38,551][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 08:56:38,575][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:56:59,457][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:57:02,515][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.868
+TokenAccuracy:	0.987
+LengthAccuracy:	0.934
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.132
+[2021-10-27 08:57:02,573][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 08:57:02,599][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:57:23,447][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:57:26,517][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.880
+TokenAccuracy:	0.989
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.120
+[2021-10-27 08:57:26,593][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 08:57:26,617][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:57:47,462][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:57:50,534][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.880
+TokenAccuracy:	0.987
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.120
+[2021-10-27 08:57:50,591][core.early_stopping][INFO] - Early stopping counter: 5 / 5
+[2021-10-27 08:57:50,616][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 08:57:50,616][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 08:58:20,199][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.883
+TokenAccuracy:	0.987
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.121
+[2021-10-27 08:58:20,199][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 08:58:54,586][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.006
+TokenAccuracy:	0.623
+LengthAccuracy:	0.979
+1st Token Accuracy:	0.088
+2nd Token Accuracy:	0.999
+Average Loss:	1.839
+[2021-10-27 08:58:54,586][core.trainer][INFO] - EPOCH 6 / 50
+[2021-10-27 08:58:54,587][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 08:59:15,599][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:59:18,670][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.877
+TokenAccuracy:	0.989
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.124
+[2021-10-27 08:59:39,859][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 08:59:42,935][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.882
+TokenAccuracy:	0.989
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.120
+[2021-10-27 08:59:42,993][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 08:59:43,017][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:00:03,985][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:00:07,056][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.890
+TokenAccuracy:	0.990
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.117
+[2021-10-27 09:00:28,196][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:00:31,265][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.889
+TokenAccuracy:	0.989
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.116
+[2021-10-27 09:00:31,347][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:00:31,348][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:00:52,136][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:00:55,196][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.890
+TokenAccuracy:	0.990
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.108
+[2021-10-27 09:01:16,562][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:01:19,629][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.892
+TokenAccuracy:	0.991
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.110
+[2021-10-27 09:01:40,814][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:01:43,876][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.900
+TokenAccuracy:	0.991
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.110
+[2021-10-27 09:01:43,935][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:01:43,961][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:02:04,929][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:02:07,993][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.900
+TokenAccuracy:	0.992
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.106
+[2021-10-27 09:02:29,290][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:02:32,357][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.895
+TokenAccuracy:	0.990
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.112
+[2021-10-27 09:02:32,416][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:02:32,442][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:02:53,388][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:02:56,457][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.890
+TokenAccuracy:	0.991
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.113
+[2021-10-27 09:02:56,542][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 09:02:56,543][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:03:17,588][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:03:20,650][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.891
+TokenAccuracy:	0.991
+LengthAccuracy:	0.934
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.119
+[2021-10-27 09:03:20,707][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 09:03:20,732][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:03:41,737][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:03:44,802][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.901
+TokenAccuracy:	0.992
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.108
+[2021-10-27 09:03:44,871][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 09:03:44,895][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:04:05,740][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:04:08,818][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.906
+TokenAccuracy:	0.992
+LengthAccuracy:	0.945
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.107
+[2021-10-27 09:04:08,876][core.early_stopping][INFO] - Early stopping counter: 5 / 5
+[2021-10-27 09:04:08,901][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:04:08,901][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:04:38,471][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.897
+TokenAccuracy:	0.990
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.118
+[2021-10-27 09:04:38,471][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:05:12,856][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.006
+TokenAccuracy:	0.629
+LengthAccuracy:	0.978
+1st Token Accuracy:	0.088
+2nd Token Accuracy:	0.999
+Average Loss:	1.861
+[2021-10-27 09:05:12,856][core.trainer][INFO] - EPOCH 7 / 50
+[2021-10-27 09:05:12,856][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:05:33,970][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:05:37,038][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.905
+TokenAccuracy:	0.992
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.110
+[2021-10-27 09:05:37,100][core.early_stopping][INFO] - Early stopping counter: 6 / 5
+[2021-10-27 09:05:37,125][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:05:37,125][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:06:06,687][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.904
+TokenAccuracy:	0.990
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.109
+[2021-10-27 09:06:06,687][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:06:41,022][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.005
+TokenAccuracy:	0.626
+LengthAccuracy:	0.977
+1st Token Accuracy:	0.082
+2nd Token Accuracy:	0.999
+Average Loss:	1.887
+[2021-10-27 09:06:41,023][core.trainer][INFO] - EPOCH 8 / 50
+[2021-10-27 09:06:41,023][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:07:02,086][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:07:05,156][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.904
+TokenAccuracy:	0.992
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.114
+[2021-10-27 09:07:05,232][core.early_stopping][INFO] - Early stopping counter: 7 / 5
+[2021-10-27 09:07:05,256][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:07:05,256][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:07:34,863][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.902
+TokenAccuracy:	0.991
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.115
+[2021-10-27 09:07:34,864][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:08:09,303][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.005
+TokenAccuracy:	0.630
+LengthAccuracy:	0.977
+1st Token Accuracy:	0.090
+2nd Token Accuracy:	0.999
+Average Loss:	1.858
+[2021-10-27 09:08:09,303][core.trainer][INFO] - EPOCH 9 / 50
+[2021-10-27 09:08:09,303][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:08:30,375][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:08:33,440][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.901
+TokenAccuracy:	0.993
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.110
+[2021-10-27 09:08:33,498][core.early_stopping][INFO] - Early stopping counter: 8 / 5
+[2021-10-27 09:08:33,523][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:08:33,523][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:09:03,099][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.906
+TokenAccuracy:	0.992
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.109
+[2021-10-27 09:09:03,099][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:09:37,498][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.630
+LengthAccuracy:	0.969
+1st Token Accuracy:	0.083
+2nd Token Accuracy:	0.999
+Average Loss:	1.896
+[2021-10-27 09:09:37,498][core.trainer][INFO] - EPOCH 10 / 50
+[2021-10-27 09:09:37,498][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:09:58,534][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:10:01,595][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.906
+TokenAccuracy:	0.994
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.103
+[2021-10-27 09:10:01,654][core.early_stopping][INFO] - Early stopping counter: 9 / 5
+[2021-10-27 09:10:01,681][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:10:01,681][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:10:31,204][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.911
+TokenAccuracy:	0.992
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.108
+[2021-10-27 09:10:31,204][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:11:05,569][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.635
+LengthAccuracy:	0.977
+1st Token Accuracy:	0.082
+2nd Token Accuracy:	1.000
+Average Loss:	1.869
+[2021-10-27 09:11:05,569][core.trainer][INFO] - EPOCH 11 / 50
+[2021-10-27 09:11:05,569][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:11:26,561][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:11:29,634][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.907
+TokenAccuracy:	0.994
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.103
+[2021-10-27 09:11:50,708][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:11:53,779][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.904
+TokenAccuracy:	0.994
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.109
+[2021-10-27 09:11:53,837][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:11:53,861][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:12:14,749][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:12:17,812][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.913
+TokenAccuracy:	0.994
+LengthAccuracy:	0.946
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:12:17,885][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 09:12:17,911][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:12:38,935][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:12:42,002][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.907
+TokenAccuracy:	0.994
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 09:12:42,059][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 09:12:42,084][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:13:03,023][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:13:06,091][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.906
+TokenAccuracy:	0.994
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.106
+[2021-10-27 09:13:06,149][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 09:13:06,173][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:13:27,189][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:13:30,253][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.911
+TokenAccuracy:	0.994
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:13:51,561][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:13:54,625][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.905
+TokenAccuracy:	0.994
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:13:54,682][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:13:54,707][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:14:15,661][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:14:18,725][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.909
+TokenAccuracy:	0.995
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:14:18,809][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 09:14:18,809][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:14:39,900][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:14:42,953][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.914
+TokenAccuracy:	0.993
+LengthAccuracy:	0.948
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.094
+[2021-10-27 09:15:04,341][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:15:07,413][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.911
+TokenAccuracy:	0.995
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:15:07,478][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:15:07,503][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:15:28,434][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:15:31,495][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.911
+TokenAccuracy:	0.996
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:15:31,577][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 09:15:31,577][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:15:52,443][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:15:55,513][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.915
+TokenAccuracy:	0.995
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:15:55,606][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 09:15:55,607][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:16:16,513][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:16:19,581][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.915
+TokenAccuracy:	0.996
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.096
+[2021-10-27 09:16:19,639][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 09:16:19,664][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:16:40,689][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:16:43,758][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.916
+TokenAccuracy:	0.995
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 09:16:43,835][core.early_stopping][INFO] - Early stopping counter: 5 / 5
+[2021-10-27 09:16:43,864][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:16:43,864][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:17:13,487][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.915
+TokenAccuracy:	0.994
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.105
+[2021-10-27 09:17:13,487][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:17:47,914][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.004
+TokenAccuracy:	0.636
+LengthAccuracy:	0.977
+1st Token Accuracy:	0.078
+2nd Token Accuracy:	1.000
+Average Loss:	1.922
+[2021-10-27 09:17:47,914][core.trainer][INFO] - EPOCH 12 / 50
+[2021-10-27 09:17:47,914][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:18:09,025][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:18:12,089][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.915
+TokenAccuracy:	0.995
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:18:12,171][core.early_stopping][INFO] - Early stopping counter: 6 / 5
+[2021-10-27 09:18:12,171][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:18:12,171][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:18:41,778][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.913
+TokenAccuracy:	0.995
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.103
+[2021-10-27 09:18:41,779][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:19:16,213][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.646
+LengthAccuracy:	0.974
+1st Token Accuracy:	0.077
+2nd Token Accuracy:	1.000
+Average Loss:	1.886
+[2021-10-27 09:19:16,214][core.trainer][INFO] - EPOCH 13 / 50
+[2021-10-27 09:19:16,214][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:19:37,279][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:19:40,352][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.996
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.094
+[2021-10-27 09:19:40,409][core.early_stopping][INFO] - Early stopping counter: 7 / 5
+[2021-10-27 09:19:40,434][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:19:40,434][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:20:10,073][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.914
+TokenAccuracy:	0.994
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.107
+[2021-10-27 09:20:10,073][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:20:44,488][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.647
+LengthAccuracy:	0.981
+1st Token Accuracy:	0.084
+2nd Token Accuracy:	1.000
+Average Loss:	1.850
+[2021-10-27 09:20:44,489][core.trainer][INFO] - EPOCH 14 / 50
+[2021-10-27 09:20:44,489][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:21:05,522][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:21:08,586][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.920
+TokenAccuracy:	0.996
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:21:08,655][core.early_stopping][INFO] - Early stopping counter: 8 / 5
+[2021-10-27 09:21:08,681][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:21:08,682][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:21:38,275][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.994
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:21:38,275][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:22:12,718][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.658
+LengthAccuracy:	0.972
+1st Token Accuracy:	0.075
+2nd Token Accuracy:	1.000
+Average Loss:	1.829
+[2021-10-27 09:22:12,718][core.trainer][INFO] - EPOCH 15 / 50
+[2021-10-27 09:22:12,718][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:22:33,784][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:22:36,845][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.916
+TokenAccuracy:	0.995
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 09:22:36,906][core.early_stopping][INFO] - Early stopping counter: 9 / 5
+[2021-10-27 09:22:36,931][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:22:36,931][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:23:06,572][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.994
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:23:06,573][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:23:41,048][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.644
+LengthAccuracy:	0.972
+1st Token Accuracy:	0.078
+2nd Token Accuracy:	0.999
+Average Loss:	1.895
+[2021-10-27 09:23:41,048][core.trainer][INFO] - EPOCH 16 / 50
+[2021-10-27 09:23:41,048][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:24:01,975][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:24:05,045][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.918
+TokenAccuracy:	0.997
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.096
+[2021-10-27 09:24:05,105][core.early_stopping][INFO] - Early stopping counter: 10 / 5
+[2021-10-27 09:24:05,129][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:24:05,130][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:24:34,733][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.920
+TokenAccuracy:	0.995
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 09:24:34,733][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:25:09,151][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.011
+TokenAccuracy:	0.660
+LengthAccuracy:	0.977
+1st Token Accuracy:	0.084
+2nd Token Accuracy:	1.000
+Average Loss:	1.821
+[2021-10-27 09:25:09,151][core.trainer][INFO] - EPOCH 17 / 50
+[2021-10-27 09:25:09,151][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:25:30,238][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:25:33,310][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.917
+TokenAccuracy:	0.996
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:25:33,373][core.early_stopping][INFO] - Early stopping counter: 11 / 5
+[2021-10-27 09:25:33,397][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:25:33,398][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:26:03,030][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.917
+TokenAccuracy:	0.995
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:26:03,031][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:26:37,513][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.643
+LengthAccuracy:	0.973
+1st Token Accuracy:	0.078
+2nd Token Accuracy:	1.000
+Average Loss:	1.923
+[2021-10-27 09:26:37,513][core.trainer][INFO] - EPOCH 18 / 50
+[2021-10-27 09:26:37,513][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:26:58,661][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:27:01,725][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.921
+TokenAccuracy:	0.996
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.094
+[2021-10-27 09:27:01,826][core.early_stopping][INFO] - Early stopping counter: 12 / 5
+[2021-10-27 09:27:01,826][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:27:01,826][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:27:31,451][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.920
+TokenAccuracy:	0.995
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 09:27:31,451][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:28:05,893][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.645
+LengthAccuracy:	0.978
+1st Token Accuracy:	0.080
+2nd Token Accuracy:	1.000
+Average Loss:	1.888
+[2021-10-27 09:28:05,893][core.trainer][INFO] - EPOCH 19 / 50
+[2021-10-27 09:28:05,893][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:28:27,042][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:28:30,118][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.996
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:28:30,193][core.early_stopping][INFO] - Early stopping counter: 13 / 5
+[2021-10-27 09:28:30,193][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:28:30,194][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:28:59,852][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.916
+TokenAccuracy:	0.994
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.103
+[2021-10-27 09:28:59,852][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:29:34,298][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.006
+TokenAccuracy:	0.641
+LengthAccuracy:	0.959
+1st Token Accuracy:	0.075
+2nd Token Accuracy:	1.000
+Average Loss:	1.938
+[2021-10-27 09:29:34,298][core.trainer][INFO] - EPOCH 20 / 50
+[2021-10-27 09:29:34,298][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:29:55,354][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:29:58,411][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.917
+TokenAccuracy:	0.996
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:29:58,470][core.early_stopping][INFO] - Early stopping counter: 14 / 5
+[2021-10-27 09:29:58,496][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:29:58,496][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:30:28,113][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.995
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.100
+[2021-10-27 09:30:28,113][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:31:02,532][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.651
+LengthAccuracy:	0.971
+1st Token Accuracy:	0.082
+2nd Token Accuracy:	1.000
+Average Loss:	1.890
+[2021-10-27 09:31:02,533][core.trainer][INFO] - EPOCH 21 / 50
+[2021-10-27 09:31:02,533][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:31:23,616][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:31:26,692][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.921
+TokenAccuracy:	0.997
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:31:26,759][core.early_stopping][INFO] - Early stopping counter: 15 / 5
+[2021-10-27 09:31:26,784][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:31:26,784][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:31:56,324][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.923
+TokenAccuracy:	0.995
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.096
+[2021-10-27 09:31:56,325][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:32:30,694][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.647
+LengthAccuracy:	0.964
+1st Token Accuracy:	0.077
+2nd Token Accuracy:	1.000
+Average Loss:	1.954
+[2021-10-27 09:32:30,695][core.trainer][INFO] - EPOCH 22 / 50
+[2021-10-27 09:32:30,695][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:32:51,810][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:32:54,874][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.996
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:32:54,957][core.early_stopping][INFO] - Early stopping counter: 16 / 5
+[2021-10-27 09:32:54,957][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:32:54,958][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:33:24,522][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.924
+TokenAccuracy:	0.995
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 09:33:24,523][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:33:58,904][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.644
+LengthAccuracy:	0.965
+1st Token Accuracy:	0.079
+2nd Token Accuracy:	1.000
+Average Loss:	1.963
+[2021-10-27 09:33:58,904][core.trainer][INFO] - EPOCH 23 / 50
+[2021-10-27 09:33:58,904][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:34:19,937][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:34:23,000][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.925
+TokenAccuracy:	0.997
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.088
+[2021-10-27 09:34:23,059][core.early_stopping][INFO] - Early stopping counter: 17 / 5
+[2021-10-27 09:34:23,085][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:34:23,086][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:34:52,672][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.920
+TokenAccuracy:	0.995
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:34:52,672][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:35:27,092][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.648
+LengthAccuracy:	0.969
+1st Token Accuracy:	0.075
+2nd Token Accuracy:	1.000
+Average Loss:	1.921
+[2021-10-27 09:35:27,092][core.trainer][INFO] - EPOCH 24 / 50
+[2021-10-27 09:35:27,092][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:35:48,256][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:35:51,318][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.917
+TokenAccuracy:	0.996
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:35:51,379][core.early_stopping][INFO] - Early stopping counter: 18 / 5
+[2021-10-27 09:35:51,408][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:35:51,408][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:36:20,966][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.996
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.104
+[2021-10-27 09:36:20,966][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:36:55,326][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.650
+LengthAccuracy:	0.968
+1st Token Accuracy:	0.071
+2nd Token Accuracy:	1.000
+Average Loss:	1.902
+[2021-10-27 09:36:55,326][core.trainer][INFO] - EPOCH 25 / 50
+[2021-10-27 09:36:55,326][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:37:16,380][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:37:19,446][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.997
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 09:37:19,517][core.early_stopping][INFO] - Early stopping counter: 19 / 5
+[2021-10-27 09:37:19,542][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:37:19,542][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:37:49,124][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.922
+TokenAccuracy:	0.995
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:37:49,124][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:38:23,528][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.643
+LengthAccuracy:	0.976
+1st Token Accuracy:	0.071
+2nd Token Accuracy:	1.000
+Average Loss:	1.957
+[2021-10-27 09:38:23,528][core.trainer][INFO] - EPOCH 26 / 50
+[2021-10-27 09:38:23,528][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:38:44,665][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:38:47,727][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.997
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 09:38:47,786][core.early_stopping][INFO] - Early stopping counter: 20 / 5
+[2021-10-27 09:38:47,812][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:38:47,812][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:39:17,365][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.926
+TokenAccuracy:	0.996
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 09:39:17,365][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:39:51,733][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.647
+LengthAccuracy:	0.974
+1st Token Accuracy:	0.071
+2nd Token Accuracy:	1.000
+Average Loss:	1.918
+[2021-10-27 09:39:51,733][core.trainer][INFO] - EPOCH 27 / 50
+[2021-10-27 09:39:51,733][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:40:12,769][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:40:15,831][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.922
+TokenAccuracy:	0.996
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 09:40:15,890][core.early_stopping][INFO] - Early stopping counter: 21 / 5
+[2021-10-27 09:40:15,915][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:40:15,916][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:40:45,484][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.926
+TokenAccuracy:	0.995
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.094
+[2021-10-27 09:40:45,485][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:41:19,849][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.011
+TokenAccuracy:	0.658
+LengthAccuracy:	0.977
+1st Token Accuracy:	0.073
+2nd Token Accuracy:	1.000
+Average Loss:	1.832
+[2021-10-27 09:41:19,849][core.trainer][INFO] - EPOCH 28 / 50
+[2021-10-27 09:41:19,849][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:41:40,948][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:41:44,025][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.923
+TokenAccuracy:	0.997
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.099
+[2021-10-27 09:41:44,090][core.early_stopping][INFO] - Early stopping counter: 22 / 5
+[2021-10-27 09:41:44,115][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:41:44,115][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:42:13,718][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.928
+TokenAccuracy:	0.996
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 09:42:13,718][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:42:48,143][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.651
+LengthAccuracy:	0.975
+1st Token Accuracy:	0.073
+2nd Token Accuracy:	1.000
+Average Loss:	1.906
+[2021-10-27 09:42:48,143][core.trainer][INFO] - EPOCH 29 / 50
+[2021-10-27 09:42:48,143][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:43:09,171][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:43:12,229][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.922
+TokenAccuracy:	0.997
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:43:12,288][core.early_stopping][INFO] - Early stopping counter: 23 / 5
+[2021-10-27 09:43:12,313][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:43:12,313][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:43:41,869][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.924
+TokenAccuracy:	0.996
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 09:43:41,869][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:44:16,216][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.649
+LengthAccuracy:	0.970
+1st Token Accuracy:	0.077
+2nd Token Accuracy:	1.000
+Average Loss:	1.923
+[2021-10-27 09:44:16,216][core.trainer][INFO] - EPOCH 30 / 50
+[2021-10-27 09:44:16,216][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:44:37,235][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:44:40,297][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.997
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.092
+[2021-10-27 09:44:40,357][core.early_stopping][INFO] - Early stopping counter: 24 / 5
+[2021-10-27 09:44:40,382][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:44:40,383][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:45:09,983][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.924
+TokenAccuracy:	0.996
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 09:45:09,983][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:45:44,483][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.648
+LengthAccuracy:	0.973
+1st Token Accuracy:	0.075
+2nd Token Accuracy:	1.000
+Average Loss:	1.931
+[2021-10-27 09:45:44,484][core.trainer][INFO] - EPOCH 31 / 50
+[2021-10-27 09:45:44,484][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:46:05,770][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:46:08,864][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.998
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.088
+[2021-10-27 09:46:08,925][core.early_stopping][INFO] - Early stopping counter: 25 / 5
+[2021-10-27 09:46:08,950][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:46:08,951][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:46:38,706][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.925
+TokenAccuracy:	0.996
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:46:38,707][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:47:13,311][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.649
+LengthAccuracy:	0.969
+1st Token Accuracy:	0.081
+2nd Token Accuracy:	1.000
+Average Loss:	1.931
+[2021-10-27 09:47:13,322][core.trainer][INFO] - EPOCH 32 / 50
+[2021-10-27 09:47:13,322][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:47:34,398][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:47:37,466][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.997
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.088
+[2021-10-27 09:47:37,534][core.early_stopping][INFO] - Early stopping counter: 26 / 5
+[2021-10-27 09:47:37,559][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:47:37,559][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:48:07,220][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.996
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:48:07,220][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:48:41,720][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.654
+LengthAccuracy:	0.975
+1st Token Accuracy:	0.084
+2nd Token Accuracy:	1.000
+Average Loss:	1.901
+[2021-10-27 09:48:41,720][core.trainer][INFO] - EPOCH 33 / 50
+[2021-10-27 09:48:41,720][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:49:02,977][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:49:06,056][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.933
+TokenAccuracy:	0.997
+LengthAccuracy:	0.947
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.084
+[2021-10-27 09:49:06,114][core.early_stopping][INFO] - Early stopping counter: 27 / 5
+[2021-10-27 09:49:06,140][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:49:06,140][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:49:35,757][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.924
+TokenAccuracy:	0.996
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:49:35,757][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:50:10,181][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.655
+LengthAccuracy:	0.968
+1st Token Accuracy:	0.081
+2nd Token Accuracy:	1.000
+Average Loss:	1.923
+[2021-10-27 09:50:10,181][core.trainer][INFO] - EPOCH 34 / 50
+[2021-10-27 09:50:10,181][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:50:31,381][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:50:34,457][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.925
+TokenAccuracy:	0.997
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.090
+[2021-10-27 09:50:34,562][core.early_stopping][INFO] - Early stopping counter: 28 / 5
+[2021-10-27 09:50:34,587][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:50:34,588][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:51:04,267][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.922
+TokenAccuracy:	0.996
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:51:04,267][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:51:38,706][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.649
+LengthAccuracy:	0.965
+1st Token Accuracy:	0.070
+2nd Token Accuracy:	1.000
+Average Loss:	1.950
+[2021-10-27 09:51:38,706][core.trainer][INFO] - EPOCH 35 / 50
+[2021-10-27 09:51:38,706][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:51:59,780][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:52:02,840][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.926
+TokenAccuracy:	0.997
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:52:02,901][core.early_stopping][INFO] - Early stopping counter: 29 / 5
+[2021-10-27 09:52:02,925][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:52:02,926][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:52:32,420][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.923
+TokenAccuracy:	0.996
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.101
+[2021-10-27 09:52:32,420][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:53:06,723][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.651
+LengthAccuracy:	0.960
+1st Token Accuracy:	0.078
+2nd Token Accuracy:	1.000
+Average Loss:	1.946
+[2021-10-27 09:53:06,724][core.trainer][INFO] - EPOCH 36 / 50
+[2021-10-27 09:53:06,724][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:53:27,720][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:53:30,790][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.996
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.091
+[2021-10-27 09:53:30,865][core.early_stopping][INFO] - Early stopping counter: 30 / 5
+[2021-10-27 09:53:30,890][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:53:30,890][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:54:00,434][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.919
+TokenAccuracy:	0.996
+LengthAccuracy:	0.933
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.106
+[2021-10-27 09:54:00,434][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:54:34,734][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.650
+LengthAccuracy:	0.967
+1st Token Accuracy:	0.074
+2nd Token Accuracy:	1.000
+Average Loss:	1.920
+[2021-10-27 09:54:34,734][core.trainer][INFO] - EPOCH 37 / 50
+[2021-10-27 09:54:34,734][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:54:55,668][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:54:58,722][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.928
+TokenAccuracy:	0.997
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:54:58,780][core.early_stopping][INFO] - Early stopping counter: 31 / 5
+[2021-10-27 09:54:58,805][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:54:58,805][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:55:28,300][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.932
+TokenAccuracy:	0.997
+LengthAccuracy:	0.945
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.089
+[2021-10-27 09:55:28,317][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:56:02,605][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.652
+LengthAccuracy:	0.966
+1st Token Accuracy:	0.072
+2nd Token Accuracy:	1.000
+Average Loss:	1.933
+[2021-10-27 09:56:02,605][core.trainer][INFO] - EPOCH 38 / 50
+[2021-10-27 09:56:02,605][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:56:23,633][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:56:26,691][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.931
+TokenAccuracy:	0.997
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 09:56:26,748][core.early_stopping][INFO] - Early stopping counter: 32 / 5
+[2021-10-27 09:56:26,773][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:56:26,773][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:56:56,276][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.997
+LengthAccuracy:	0.939
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 09:56:56,276][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:57:30,567][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.652
+LengthAccuracy:	0.968
+1st Token Accuracy:	0.075
+2nd Token Accuracy:	1.000
+Average Loss:	1.936
+[2021-10-27 09:57:30,568][core.trainer][INFO] - EPOCH 39 / 50
+[2021-10-27 09:57:30,568][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:57:51,505][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:57:54,569][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.929
+TokenAccuracy:	0.998
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.094
+[2021-10-27 09:57:54,636][core.early_stopping][INFO] - Early stopping counter: 33 / 5
+[2021-10-27 09:57:54,661][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 09:57:54,661][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 09:58:24,163][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.926
+TokenAccuracy:	0.996
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 09:58:24,164][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 09:58:58,438][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.655
+LengthAccuracy:	0.968
+1st Token Accuracy:	0.075
+2nd Token Accuracy:	1.000
+Average Loss:	1.924
+[2021-10-27 09:58:58,438][core.trainer][INFO] - EPOCH 40 / 50
+[2021-10-27 09:58:58,438][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 09:59:19,513][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:59:22,576][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.929
+TokenAccuracy:	0.997
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.090
+[2021-10-27 09:59:45,099][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 09:59:48,165][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.997
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.086
+[2021-10-27 09:59:48,225][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 09:59:48,250][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:00:09,196][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:00:12,264][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.925
+TokenAccuracy:	0.998
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 10:00:12,343][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 10:00:12,358][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:00:33,353][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:00:36,411][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.998
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 10:00:36,475][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 10:00:36,499][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:00:57,342][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:01:00,411][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.931
+TokenAccuracy:	0.998
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 10:01:00,468][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 10:01:00,492][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:01:21,390][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:01:24,451][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.928
+TokenAccuracy:	0.998
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.092
+[2021-10-27 10:01:45,587][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:01:48,650][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.998
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.092
+[2021-10-27 10:01:48,707][core.early_stopping][INFO] - Early stopping counter: 1 / 5
+[2021-10-27 10:01:48,732][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:02:09,579][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:02:12,645][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.936
+TokenAccuracy:	0.998
+LengthAccuracy:	0.946
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.081
+[2021-10-27 10:02:12,721][core.early_stopping][INFO] - Early stopping counter: 2 / 5
+[2021-10-27 10:02:12,745][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:02:33,629][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:02:36,692][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.935
+TokenAccuracy:	0.998
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.086
+[2021-10-27 10:02:36,749][core.early_stopping][INFO] - Early stopping counter: 3 / 5
+[2021-10-27 10:02:36,774][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:02:57,649][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:03:00,707][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.998
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.092
+[2021-10-27 10:03:00,764][core.early_stopping][INFO] - Early stopping counter: 4 / 5
+[2021-10-27 10:03:00,789][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:03:21,732][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:03:24,783][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.998
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.091
+[2021-10-27 10:03:24,842][core.early_stopping][INFO] - Early stopping counter: 5 / 5
+[2021-10-27 10:03:24,867][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:03:24,867][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:03:54,428][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.928
+TokenAccuracy:	0.998
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.097
+[2021-10-27 10:03:54,429][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:04:28,785][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.647
+LengthAccuracy:	0.969
+1st Token Accuracy:	0.065
+2nd Token Accuracy:	1.000
+Average Loss:	2.039
+[2021-10-27 10:04:28,785][core.trainer][INFO] - EPOCH 41 / 50
+[2021-10-27 10:04:28,786][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:04:49,804][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:04:52,862][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.998
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 10:04:52,932][core.early_stopping][INFO] - Early stopping counter: 6 / 5
+[2021-10-27 10:04:52,957][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:04:52,957][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:05:22,469][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.997
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.090
+[2021-10-27 10:05:22,469][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:05:56,836][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.652
+LengthAccuracy:	0.973
+1st Token Accuracy:	0.068
+2nd Token Accuracy:	1.000
+Average Loss:	1.937
+[2021-10-27 10:05:56,836][core.trainer][INFO] - EPOCH 42 / 50
+[2021-10-27 10:05:56,836][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:06:17,897][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:06:20,957][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.932
+TokenAccuracy:	0.998
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.093
+[2021-10-27 10:06:21,015][core.early_stopping][INFO] - Early stopping counter: 7 / 5
+[2021-10-27 10:06:21,039][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:06:21,039][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:06:50,570][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.997
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.092
+[2021-10-27 10:06:50,570][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:07:24,851][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.653
+LengthAccuracy:	0.965
+1st Token Accuracy:	0.070
+2nd Token Accuracy:	1.000
+Average Loss:	1.934
+[2021-10-27 10:07:24,851][core.trainer][INFO] - EPOCH 43 / 50
+[2021-10-27 10:07:24,851][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:07:45,982][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:07:49,037][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.935
+TokenAccuracy:	0.998
+LengthAccuracy:	0.944
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.086
+[2021-10-27 10:07:49,096][core.early_stopping][INFO] - Early stopping counter: 8 / 5
+[2021-10-27 10:07:49,120][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:07:49,120][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:08:18,653][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.997
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.096
+[2021-10-27 10:08:18,653][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:08:52,987][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.009
+TokenAccuracy:	0.661
+LengthAccuracy:	0.972
+1st Token Accuracy:	0.067
+2nd Token Accuracy:	1.000
+Average Loss:	1.934
+[2021-10-27 10:08:52,988][core.trainer][INFO] - EPOCH 44 / 50
+[2021-10-27 10:08:52,988][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:09:14,027][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:09:17,102][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.931
+TokenAccuracy:	0.999
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.088
+[2021-10-27 10:09:17,165][core.early_stopping][INFO] - Early stopping counter: 9 / 5
+[2021-10-27 10:09:17,190][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:09:17,190][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:09:46,728][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.930
+TokenAccuracy:	0.997
+LengthAccuracy:	0.940
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.095
+[2021-10-27 10:09:46,729][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:10:21,110][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.653
+LengthAccuracy:	0.967
+1st Token Accuracy:	0.070
+2nd Token Accuracy:	1.000
+Average Loss:	1.974
+[2021-10-27 10:10:21,110][core.trainer][INFO] - EPOCH 45 / 50
+[2021-10-27 10:10:21,110][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:10:42,184][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:10:45,255][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.928
+TokenAccuracy:	0.998
+LengthAccuracy:	0.937
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.090
+[2021-10-27 10:10:45,335][core.early_stopping][INFO] - Early stopping counter: 10 / 5
+[2021-10-27 10:10:45,336][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:10:45,336][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:11:14,907][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.927
+TokenAccuracy:	0.997
+LengthAccuracy:	0.936
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 10:11:14,907][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:11:49,212][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.648
+LengthAccuracy:	0.968
+1st Token Accuracy:	0.063
+2nd Token Accuracy:	1.000
+Average Loss:	2.024
+[2021-10-27 10:11:49,212][core.trainer][INFO] - EPOCH 46 / 50
+[2021-10-27 10:11:49,212][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:12:10,155][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:12:13,205][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.933
+TokenAccuracy:	0.998
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.091
+[2021-10-27 10:12:13,263][core.early_stopping][INFO] - Early stopping counter: 11 / 5
+[2021-10-27 10:12:13,287][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:12:13,287][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:12:42,846][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.997
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.094
+[2021-10-27 10:12:42,846][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:13:17,201][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.654
+LengthAccuracy:	0.968
+1st Token Accuracy:	0.068
+2nd Token Accuracy:	1.000
+Average Loss:	1.976
+[2021-10-27 10:13:17,201][core.trainer][INFO] - EPOCH 47 / 50
+[2021-10-27 10:13:17,202][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:13:38,237][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:13:41,305][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.999
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.087
+[2021-10-27 10:13:41,364][core.early_stopping][INFO] - Early stopping counter: 12 / 5
+[2021-10-27 10:13:41,389][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:13:41,390][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:14:10,962][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.998
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.091
+[2021-10-27 10:14:10,962][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:14:45,257][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.010
+TokenAccuracy:	0.656
+LengthAccuracy:	0.964
+1st Token Accuracy:	0.065
+2nd Token Accuracy:	1.000
+Average Loss:	1.993
+[2021-10-27 10:14:45,257][core.trainer][INFO] - EPOCH 48 / 50
+[2021-10-27 10:14:45,257][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:15:06,295][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:15:09,353][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.933
+TokenAccuracy:	0.998
+LengthAccuracy:	0.943
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.089
+[2021-10-27 10:15:09,421][core.early_stopping][INFO] - Early stopping counter: 13 / 5
+[2021-10-27 10:15:09,446][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:15:09,446][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:15:38,968][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.935
+TokenAccuracy:	0.998
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.090
+[2021-10-27 10:15:38,969][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:16:13,263][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.008
+TokenAccuracy:	0.656
+LengthAccuracy:	0.970
+1st Token Accuracy:	0.063
+2nd Token Accuracy:	1.000
+Average Loss:	1.951
+[2021-10-27 10:16:13,263][core.trainer][INFO] - EPOCH 49 / 50
+[2021-10-27 10:16:13,263][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:16:34,269][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:16:37,330][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.998
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.090
+[2021-10-27 10:16:37,389][core.early_stopping][INFO] - Early stopping counter: 14 / 5
+[2021-10-27 10:16:37,416][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:16:37,416][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:17:06,972][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.929
+TokenAccuracy:	0.998
+LengthAccuracy:	0.938
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.098
+[2021-10-27 10:17:06,972][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:17:41,275][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.007
+TokenAccuracy:	0.648
+LengthAccuracy:	0.962
+1st Token Accuracy:	0.063
+2nd Token Accuracy:	1.000
+Average Loss:	2.032
+[2021-10-27 10:17:41,275][core.trainer][INFO] - EPOCH 50 / 50
+[2021-10-27 10:17:41,275][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-27 10:18:02,277][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-27 10:18:05,337][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.935
+TokenAccuracy:	0.999
+LengthAccuracy:	0.942
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.085
+[2021-10-27 10:18:05,394][core.early_stopping][INFO] - Early stopping counter: 15 / 5
+[2021-10-27 10:18:05,419][core.early_stopping][INFO] - Pausing model saving until validation loss decreases by 0.0001
+[2021-10-27 10:18:05,419][core.trainer][INFO] - Computing metrics for 'test' dataset
+[2021-10-27 10:18:34,948][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.934
+TokenAccuracy:	0.998
+LengthAccuracy:	0.941
+1st Token Accuracy:	1.000
+2nd Token Accuracy:	1.000
+Average Loss:	0.091
+[2021-10-27 10:18:34,948][core.trainer][INFO] - Computing metrics for 'gen' dataset
+[2021-10-27 10:19:09,243][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.012
+TokenAccuracy:	0.659
+LengthAccuracy:	0.965
+1st Token Accuracy:	0.069
+2nd Token Accuracy:	1.000
+Average Loss:	1.960

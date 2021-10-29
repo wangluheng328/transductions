@@ -1,0 +1,114 @@
+experiment:
+  dataset:
+    name: ms-passivization-de
+    input: ms-passivization.tsv
+    source_format: sequence
+    target_format: sequence
+    overwrite: false
+    transform_field: target
+    splits:
+      train: 80
+      test: 10
+      val: 10
+  hyperparameters:
+    epochs: 50
+    batch_size: 5
+    lr: 0.001
+    tolerance: 0.0001
+    num_iters_eval: 1000
+    min_iters: 30000
+    patience: 5
+    tf_ratio: 0.5
+    cuda: 0
+  model:
+    name: LSTM-Multiplicative
+    encoder:
+      unit: LSTM
+      type: sequence
+      dropout: 0
+      num_layers: 1
+      hidden_size: 256
+      max_length: 0
+      embedding_size: 256
+      bidirectional: false
+    decoder:
+      unit: LSTM
+      type: sequence
+      dropout: 0
+      num_layers: 1
+      max_length: 30
+      hidden_size: 256
+      attention: Multiplicative
+      embedding_size: 256
+  name: passiv-de-lstm-1layer
+pretty_print: true
+
+[2021-10-26 20:03:56,790][core.trainer][INFO] - DEVICE: cuda
+[2021-10-26 20:03:56,790][core.dataset.base_dataset][INFO] - Initializing dataset
+[2021-10-26 20:03:56,791][core.dataset.base_dataset][INFO] - Constructing fields from dataset.
+[2021-10-26 20:03:59,613][core.trainer][INFO] - TransductionDataset(
+ splits: [val (1000 sequences), train (100000 sequences), test (10000 sequences), gen (10000 sequences)]
+ fields: [source, annotation, target]
+)
+[2021-10-26 20:03:59,613][core.models.base_model][INFO] - Initializing model
+[2021-10-26 20:04:02,895][core.trainer][INFO] - TransductionModel(
+  (_encoder): TransductionSequenceEncoder(
+    (module): Sequential(
+      (0): Embedding(83, 256)
+      (1): LSTM(256, 256)
+    )
+  )
+  (_decoder): LSTMSequenceDecoder(
+    (_embedding): Embedding(97, 256)
+    (_unit): LSTM(512, 256)
+    (_out): Linear(in_features=256, out_features=97, bias=True)
+    (_attention): MultiplicativeAttention(
+      (key_map): Linear(in_features=256, out_features=256, bias=True)
+      (val_map): Linear(in_features=256, out_features=256, bias=True)
+    )
+  )
+)
+[2021-10-26 20:04:02,895][core.trainer][INFO] - Beginning training
+[2021-10-26 20:04:02,899][core.metrics.meter][INFO] - Logging with tensorboard; view with `tensorboard --logdir=/scratch/lw2534/lab/transductions/outputs/passiv-de-lstm-1layer/LSTM-Multiplicative/2021-10-26_20-03-56/tensorboard`
+[2021-10-26 20:04:02,899][core.trainer][INFO] - EPOCH 1 / 50
+[2021-10-26 20:04:02,899][core.trainer][INFO] - Computing metrics for 'train' dataset
+[2021-10-26 20:04:17,364][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-26 20:04:18,807][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.099
+LengthAccuracy:	0.326
+1st Token Accuracy:	0.000
+2nd Token Accuracy:	0.001
+Average Loss:	4.521
+[2021-10-26 20:04:34,421][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-26 20:04:35,752][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.113
+LengthAccuracy:	0.388
+1st Token Accuracy:	0.000
+2nd Token Accuracy:	0.000
+Average Loss:	4.415
+[2021-10-26 20:04:50,999][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-26 20:04:52,178][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.105
+LengthAccuracy:	0.383
+1st Token Accuracy:	0.000
+2nd Token Accuracy:	0.000
+Average Loss:	4.300
+[2021-10-26 20:05:06,748][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-26 20:05:07,766][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.102
+LengthAccuracy:	0.343
+1st Token Accuracy:	0.000
+2nd Token Accuracy:	0.000
+Average Loss:	4.195
+[2021-10-26 20:05:21,137][core.trainer][INFO] - Computing metrics for 'val' dataset
+[2021-10-26 20:05:22,012][core.metrics.meter][INFO] - Meter:
+SequenceAccuracy:	0.000
+TokenAccuracy:	0.106
+LengthAccuracy:	0.255
+1st Token Accuracy:	0.000
+2nd Token Accuracy:	0.000
+Average Loss:	4.132
