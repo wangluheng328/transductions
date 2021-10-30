@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=qform-en-lstm-2layers
+#SBATCH --job-name=qform-en-lstm-2layers-90epochs
 #SBATCH --open-mode=append
 #SBATCH --output=./out_and_err/%j_%x.out
 #SBATCH --error=./out_and_err/%j_%x.err
