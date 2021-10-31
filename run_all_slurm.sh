@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "Got to run"
+sbatch passiv-de-lstm-1layer.slurm
 sbatch passiv-de-lstm-2layers.slurm
 sbatch passiv-de-transformer-2layers.slurm
 sbatch passiv-de-transformer-1layer.slurm
